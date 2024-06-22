@@ -130,5 +130,23 @@ app.post('/api/invoices', async (req, res) => {
   }
 });
 
+app.get('/api/user/:recipientAddress/invoices', async (req, res) => {
+  const { recipientAddress } = req.params;
+
+  try {
+    // Query invoices for the given recipientAddress
+    const invoices = await Invoice.findAll({
+      where: {
+        recipientAddress: recipientAddress,
+      },
+    });
+
+    res.status(200).json(invoices);
+  } catch (error) {
+    console.error('Error fetching invoices:', error);
+    res.status(500).json({ error: 'Failed to fetch invoices' });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
