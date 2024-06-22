@@ -55,7 +55,7 @@ const Invoice = sequelize.define('Invoice', {
     allowNull: false,
   },
   paymentDue: {
-    type: DataTypes.STRING, // Assuming paymentDue is a string for simplicity
+    type: DataTypes.NUMERIC, 
     allowNull: false,
   },
 });
@@ -134,7 +134,7 @@ app.post('/api/invoices', async (req, res) => {
   }
 });
 
-app.get('/api/user/:recipientAddress/invoices', async (req, res) => {
+app.get('/user/:recipientAddress/invoices', async (req, res) => {
   const { recipientAddress } = req.params;
 
   try {
@@ -151,6 +151,8 @@ app.get('/api/user/:recipientAddress/invoices', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch invoices' });
   }
 });
+
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
