@@ -1,5 +1,3 @@
-// backend/index.js
-
 require('dotenv').config(); // Load environment variables from .env file
 
 const express = require('express');
@@ -56,6 +54,10 @@ const Invoice = sequelize.define('Invoice', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  paymentDue: {
+    type: DataTypes.STRING, // Assuming paymentDue is a string for simplicity
+    allowNull: false,
+  },
 });
 
 // Sync Database
@@ -91,7 +93,8 @@ app.post('/api/invoices', async (req, res) => {
     dueDate,
     description,
     companyEmail,
-    invoiceCategory
+    invoiceCategory,
+    paymentDue // Added paymentDue to destructuring
   } = req.body;
 
   try {
@@ -103,7 +106,8 @@ app.post('/api/invoices', async (req, res) => {
       dueDate,
       description,
       companyEmail,
-      invoiceCategory
+      invoiceCategory,
+      paymentDue // Include paymentDue in the database entry
     });
 
     // Prepare email options

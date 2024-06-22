@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Select, MenuItem, FormControl, InputLabel, TextareaAutosize, Grid } from '@mui/material';
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid } from '@mui/material';
 
 const AdminPage = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +11,7 @@ const AdminPage = () => {
     description: '',
     companyEmail: '',
     invoiceCategory: '',
+    paymentDue: '',
   });
 
   const handleChange = (e) => {
@@ -35,6 +36,7 @@ const AdminPage = () => {
         description: '',
         companyEmail: '',
         invoiceCategory: '',
+        paymentDue: '',
       });
     } catch (error) {
       console.error('Error creating invoice:', error);
@@ -77,6 +79,7 @@ const AdminPage = () => {
                 onChange={handleChange}
                 fullWidth
                 required
+                MenuProps={{ PaperProps: { style: { maxHeight: 300 } } }}
               >
                 <MenuItem value="">Select Cryptocurrency</MenuItem>
                 <MenuItem value="Bitcoin">Bitcoin</MenuItem>
@@ -100,13 +103,15 @@ const AdminPage = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextareaAutosize
-              rowsMin={3}
-              placeholder="Description"
+            <TextField
+              label="Description"
+              multiline
+              rows={3}
               name="description"
               value={formData.description}
               onChange={handleChange}
               fullWidth
+              variant="outlined"
               required
             />
           </Grid>
@@ -126,6 +131,17 @@ const AdminPage = () => {
               label="Invoice Category"
               name="invoiceCategory"
               value={formData.invoiceCategory}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Payment Due"
+              type="text"
+              name="paymentDue"
+              value={formData.paymentDue}
               onChange={handleChange}
               fullWidth
               required
