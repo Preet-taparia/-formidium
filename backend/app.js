@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api', routes); // Assuming your API base path is '/api'
+app.use('/', routes); // Assuming your API base path is '/api'
 
 // Error handler
 app.use((err, req, res, next) => {
