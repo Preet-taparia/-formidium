@@ -1,6 +1,6 @@
-// src/components/AdminPage.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, TextareaAutosize, Grid } from '@mui/material';
 
 const AdminPage = () => {
   const [formData, setFormData] = useState({
@@ -47,40 +47,96 @@ const AdminPage = () => {
       <h1>Admin Page</h1>
       <h2>Make an Invoice</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Recipient Address</label>
-          <input type="text" name="recipientAddress" value={formData.recipientAddress} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Company Name</label>
-          <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Cryptocurrency</label>
-          <select name="cryptocurrency" value={formData.cryptocurrency} onChange={handleChange} required>
-            <option value="">Select Cryptocurrency</option>
-            <option value="Bitcoin">Bitcoin</option>
-            <option value="Ethereum">Ethereum</option>
-            <option value="Litecoin">Litecoin</option>
-          </select>
-        </div>
-        <div>
-          <label>Due Date</label>
-          <input type="date" name="dueDate" value={formData.dueDate} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Description</label>
-          <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
-        </div>
-        <div>
-          <label>Company Email</label>
-          <input type="email" name="companyEmail" value={formData.companyEmail} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Invoice Category</label>
-          <input type="text" name="invoiceCategory" value={formData.invoiceCategory} onChange={handleChange} required />
-        </div>
-        <button type="submit">Register Invoice</button>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Recipient Address"
+              name="recipientAddress"
+              value={formData.recipientAddress}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Company Name"
+              name="companyName"
+              value={formData.companyName}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel>Cryptocurrency</InputLabel>
+              <Select
+                name="cryptocurrency"
+                value={formData.cryptocurrency}
+                onChange={handleChange}
+                fullWidth
+                required
+              >
+                <MenuItem value="">Select Cryptocurrency</MenuItem>
+                <MenuItem value="Bitcoin">Bitcoin</MenuItem>
+                <MenuItem value="Ethereum">Ethereum</MenuItem>
+                <MenuItem value="Litecoin">Litecoin</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Due Date"
+              type="date"
+              name="dueDate"
+              value={formData.dueDate}
+              onChange={handleChange}
+              fullWidth
+              required
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextareaAutosize
+              rowsMin={3}
+              placeholder="Description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Company Email"
+              type="email"
+              name="companyEmail"
+              value={formData.companyEmail}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Invoice Category"
+              name="invoiceCategory"
+              value={formData.invoiceCategory}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="primary">
+              Register Invoice
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </div>
   );
