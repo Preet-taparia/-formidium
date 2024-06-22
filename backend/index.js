@@ -65,6 +65,46 @@ const Invoice = sequelize.define('Invoice', {
   },
 });
 
+const CompletedInvoice = sequelize.define('CompletedInvoice', {
+  recipientAddress: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  companyName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  cryptocurrency: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  dueDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  companyEmail: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  invoiceCategory: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  paymentDue: {
+    type: DataTypes.STRING, // Assuming paymentDue is a string for simplicity
+    allowNull: false,
+  },
+  completionDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: Sequelize.NOW, // Set default to current date/time
+  }
+});
+
 // Sync Database
 (async () => {
   try {
