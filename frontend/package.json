@@ -12,13 +12,20 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@material-tailwind/react": "^2.1.9",
     "@mui/material": "^5.15.20",
+    "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "framer": "^2.4.1",
+    "framer-motion": "^11.2.11",
+    "postcss": "^8.4.38",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^5.3.0"
+    "react-router-dom": "^5.3.0",
+    "styled-components": "^6.1.11",
+    "tailwindcss": "^3.4.4"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

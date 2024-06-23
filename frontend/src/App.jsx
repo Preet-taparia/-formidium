@@ -1,42 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import AdminPage from './components/AdminPage.jsx';
-import './App.css';
+import Signin from './components/Signup';
+import AdminPage from './components/AdminPage';
+import InvoiceList from './components/InvoiceList';
+import Userpage from './components/Userpage';
 
 function App() {
-  const [count, setCount] = useState(0); // State declaration for count
-
   return (
     <Router>
       <div>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/admin">Admin Page</Link>
-        </nav>
         <Switch>
-          <Route exact path="/">
-            <div>
-              <div>
-                <a href="https://vitejs.dev" target="_blank" rel="noopener noreferrer">
-                  <img src="/vite.svg" className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
-                  <img src="/src/assets/react.svg" className="logo react" alt="React logo" />
-                </a>
-              </div>
-              <h1>Vite + React</h1>
-              <div className="card">
-                <button onClick={() => setCount(count + 1)}>
-                  count is {count}
-                </button>
-                <p>Edit <code>src/App.jsx</code> and save to test HMR</p>
-              </div>
-              <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-              </p>
-            </div>
-          </Route>
-          <Route path="/admin" component={AdminPage} />
+          <Route path="/user" component={Userpage} />
+          <Route path="/admin/register" component={AdminPage} />
+          <Route path="/notify/invoices" component={InvoiceList} />
+          <Route path="/" component={Signin} />
         </Switch>
       </div>
     </Router>

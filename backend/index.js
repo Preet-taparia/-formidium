@@ -1,13 +1,13 @@
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Sequelize, DataTypes } = require('sequelize');
 const nodemailer = require('nodemailer');
+const otpGenerator = require('otp-generator');
 
 const app = express();
-
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -55,13 +55,31 @@ const Invoice = sequelize.define('Invoice', {
     allowNull: false,
   },
   paymentDue: {
-    type: DataTypes.NUMERIC, 
+    type: DataTypes.NUMERIC,
     allowNull: false,
   },
-  isPending:{
-    type:DataTypes.BOOLEAN,
-    allowNull:false,
-    defaultValue:true, // Default to true as invoices are pending when created
+  isPending: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true, // Default to true as invoices are pending when created
+  },
+});
+
+// Define the User model
+const User = sequelize.define('User', {
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  otp: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  email_verified: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
   },
 });
 
@@ -70,7 +88,7 @@ const Invoice = sequelize.define('Invoice', {
   try {
     await sequelize.authenticate();
     console.log('Connection to the database has been established successfully.');
-    await sequelize.sync({alter:true}); // Sync models with database
+    await sequelize.sync({ alter: true }); // Sync models with database
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
@@ -89,7 +107,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Routes
+// Route to create a new invoice
 app.post('/api/invoices', async (req, res) => {
   const {
     recipientAddress,
@@ -99,7 +117,7 @@ app.post('/api/invoices', async (req, res) => {
     description,
     companyEmail,
     invoiceCategory,
-    paymentDue // Added paymentDue to destructuring
+    paymentDue
   } = req.body;
 
   try {
@@ -112,7 +130,7 @@ app.post('/api/invoices', async (req, res) => {
       description,
       companyEmail,
       invoiceCategory,
-      paymentDue // Include paymentDue in the database entry
+      paymentDue
     });
 
     // Prepare email options
@@ -139,11 +157,22 @@ app.post('/api/invoices', async (req, res) => {
   }
 });
 
+// Route to get all invoices
+app.get('/api/invoices', async (req, res) => {
+  try {
+    const invoices = await Invoice.findAll();
+    res.status(200).json(invoices);
+  } catch (error) {
+    console.error('Error fetching invoices:', error);
+    res.status(500).json({ error: 'Failed to fetch invoices' });
+  }
+});
+
+// Route to get invoices for a specific user
 app.get('/user/:recipientAddress/invoices', async (req, res) => {
   const { recipientAddress } = req.params;
 
   try {
-    // Query invoices for the given recipientAddress
     const invoices = await Invoice.findAll({
       where: {
         recipientAddress: recipientAddress,
@@ -157,12 +186,10 @@ app.get('/user/:recipientAddress/invoices', async (req, res) => {
   }
 });
 
-
-
-// Put API to update the Amount
+// Route to update the payment amount for an invoice
 app.put('/invoices/:invoiceId/payment', async (req, res) => {
   const { invoiceId } = req.params;
-  const { amountPaid,walletAddress } = req.body;
+  const { amountPaid, walletAddress } = req.body;
 
   try {
     const invoice = await Invoice.findByPk(invoiceId);
@@ -196,7 +223,7 @@ app.put('/invoices/:invoiceId/payment', async (req, res) => {
   }
 });
 
-// Endpoint to get pending invoices
+// Route to get pending invoices
 app.get('/invoices/pending', async (req, res) => {
   try {
     const pendingInvoices = await Invoice.findAll({
@@ -211,7 +238,7 @@ app.get('/invoices/pending', async (req, res) => {
   }
 });
 
-// Endpoint to get completed invoices
+// Route to get completed invoices
 app.get('/invoices/completed', async (req, res) => {
   try {
     const completedInvoices = await Invoice.findAll({
@@ -226,7 +253,66 @@ app.get('/invoices/completed', async (req, res) => {
   }
 });
 
+// Route to generate and send OTP
+app.post('/api/generate-otp', async (req, res) => {
+  const { email } = req.body;
 
+  try {
+    // Generate OTP
+    const otp = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false });
+
+    // Save OTP to the database or update existing
+    let user = await User.findOne({ where: { email } });
+    if (!user) {
+      user = await User.create({ email, otp });
+    } else {
+      user.otp = otp;
+      await user.save();
+    }
+
+    // Prepare email options
+    const mailOptions = {
+      from: process.env.EMAIL_NAME,
+      to: email,
+      subject: 'Your OTP for Login',
+      text: `Your OTP for login is: ${otp}`,
+    };
+
+    // Send email
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent: ' + info.response);
+
+    res.status(200).json({ message: 'OTP sent successfully' });
+  } catch (error) {
+    console.error('Error generating OTP or sending email:', error);
+    res.status(500).json({ error: 'Failed to generate OTP or send email' });
+  }
+});
+
+// Route to verify OTP and proceed
+app.post('/api/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    // Find user by email
+    const user = await User.findOne({ where: { email } });
+
+    // Check if user exists and OTP matches
+    if (!user || user.otp !== otp) {
+      return res.status(400).json({ error: 'Invalid OTP' });
+    }
+
+    // Clear OTP after successful verification (optional)
+    user.otp = null;
+    user.email_verified = true;
+    await user.save();
+
+    res.status(200).json({ message: 'OTP verified successfully' });
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).json({ error: 'Failed to verify OTP' });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
