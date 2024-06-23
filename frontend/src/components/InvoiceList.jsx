@@ -61,6 +61,7 @@ const InvoiceList = () => {
     setSearchQuery('');
     setShowNotFound(false); // Reset not found message when clearing search
   };
+  
 
   // Show "Oops! Not Found" message and sad image when no results found
   if (filteredInvoices.length === 0 && searchQuery !== '' && !loading && !error) {

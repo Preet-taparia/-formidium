@@ -10,6 +10,7 @@ const otpGenerator = require('otp-generator');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+const port = 5000;
 
 // Sequelize database connection
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
@@ -105,6 +106,29 @@ const transporter = nodemailer.createTransport({
   tls: {
     ciphers: 'SSLv3',
   },
+});
+
+const adminCredentials = {
+  email: 'admin@example.com',
+  password: 'admin123',
+};
+
+// Example endpoint for admin login
+app.post('/api/admin-login', (req, res) => {
+  const { email, password } = req.body;
+
+  console.log('Admin login attempt:', { email, password });
+
+  // Check if the received credentials match the hardcoded admin credentials
+  if (email === adminCredentials.email && password === adminCredentials.password) {
+    // Successful login
+    console.log('Admin login successful');
+    res.status(200).json({ message: 'Admin login successful' });
+  } else {
+    // Invalid credentials
+    console.log('Invalid credentials');
+    res.status(401).json({ message: 'Invalid credentials' });
+  }
 });
 
 // Route to create a new invoice
@@ -314,5 +338,6 @@ app.post('/api/verify-otp', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});

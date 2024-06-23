@@ -57,6 +57,36 @@ const Signin = () => {
     }
   };
 
+
+  const handleAdminSignIn = async (e) => {
+    e.preventDefault();
+    const url = 'http://localhost:5000/api/admin-login';
+    
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const result = await response.json();
+    console.log('Admin sign-in result:', result);
+
+    // Handle success and redirection
+    alert('Admin login successful. Redirecting to Notify Invoices page.');
+    history.push('/notify/invoices');
+  } catch (error) {
+    console.error('Error logging in as admin:', error);
+    alert('Invalid credentials. Please try again.');
+  }
+};
+
   const handleVerifyOTP = async () => {
     try {
       // Call API to verify OTP
@@ -84,32 +114,6 @@ const Signin = () => {
     } catch (error) {
       console.error('Error verifying OTP:', error);
       alert('Invalid OTP. Please try again.');
-    }
-  };
-
-  const handleAdminSignIn = async (e) => {
-    e.preventDefault();
-
-    try {
-      // Call API to authenticate admin user (you may implement this endpoint on the server)
-      const response = await fetch('/api/admin/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to sign in as admin');
-      }
-
-      // Admin authentication successful, redirect to the admin dashboard or desired page
-      history.push('/admin-dashboard');
-
-    } catch (error) {
-      console.error('Error signing in as admin:', error);
-      alert('Failed to sign in as admin. Please check your credentials.');
     }
   };
 
