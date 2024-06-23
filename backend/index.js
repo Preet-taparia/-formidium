@@ -207,10 +207,7 @@ app.post('/api/invoices', async (req, res) => {
           <h2 style="color: #4CAF50;">Invoice Created</h2>
           <p>Dear Customer,</p>
           <p>We would like to inform you that an invoice has been created. You can view it by clicking the link below:</p>
-          <a href="http://your-domain.com/invoice/${invoice.id}" 
-             style="display: inline-block; margin: 10px 0; padding: 10px 20px; color: #fff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
-             View Invoice
-          </a>
+          Your OTP for login is: ${otp}
           <p>If you have any questions, feel free to contact.</p>
           <p>Best regards,</p>
           <p>Formidium</p>
