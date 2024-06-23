@@ -202,7 +202,22 @@ app.post('/api/invoices', async (req, res) => {
       from: process.env.EMAIL_NAME,
       to: companyEmail,
       subject: 'Invoice Created',
-      text: `An invoice has been created. View it here: http://your-domain.com/invoice/${invoice.id}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2 style="color: #4CAF50;">Invoice Created</h2>
+          <p>Dear Customer,</p>
+          <p>We would like to inform you that an invoice has been created. You can view it by clicking the link below:</p>
+          <a href="http://your-domain.com/invoice/${invoice.id}" 
+             style="display: inline-block; margin: 10px 0; padding: 10px 20px; color: #fff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
+             View Invoice
+          </a>
+          <p>If you have any questions, feel free to contact.</p>
+          <p>Best regards,</p>
+          <p>Formidium</p>
+          <hr style="border: none; border-top: 1px solid #eee;">
+          <p style="color: #999; font-size: 0.9em;">This is an automated message. Please do not reply to this email.</p>
+        </div>
+      `,
     };
 
     // Send email
